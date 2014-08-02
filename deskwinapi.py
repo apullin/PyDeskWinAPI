@@ -1,10 +1,21 @@
 from ctypes import *
 
 class DeskWinAPI():
-	def __init__(self):
+	def __init__(self, comport = '', init = False, secondGen = True):
 		self.dll = cdll.LoadLibrary("DeskWinAPI.dll")
+		self.comport = comport
+		self.secondGen = secondGen
+		
+		if init and (comport ~= ''):
+			Ack = DeskWinReset(self.comport, 27, self.secondGen)
+			
+		if err ~= self.DESKWIN_OK:
+			#TODO: handle start-up errors
+			pass
+		
 	
 	# Controller Acknowledgements
+	# Todo: change these to a dictionary?
 	DESKWIN_OK = 90
 	DESKWIN_IN_POSITION = 91
 	DESKWIN_BUFFERFULL = 92
@@ -74,6 +85,13 @@ class DeskWinAPI():
 	CHASEENCODER = 22
 	READRPM = 23
 	OUTPUTIMEDIATE = 24
+	
+	# Helper defines
+	AXIS_X = 1
+	AXIS_Y = 2
+	AXIS_Z = 4
+	AXIS_A = 8
+	AXIS_XYZA = AXIS_X + AXIS_Y + AXIS_Z + AXIS_A
 	
 	def SetArcDirection(self, Direction): # byte
 		return self.dll.DeskWinSetArcDirection(Direction) # byte
